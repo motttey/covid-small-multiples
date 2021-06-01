@@ -2,6 +2,19 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+function SmallMultiples() {
+  const listItems = ["Tokyo", "Osaka", "Aichi", "Kanagawa", "Hokkaido"].map((pref) =>
+    <div className="column is-2">
+      <h2>{pref}</h2>
+    </div>
+  );
+  return (
+    <div className="container">
+      <div className="columns">{listItems}</div>
+    </div>
+  )
+}
+
 function App() {
   return (
     <div className="App">
@@ -10,15 +23,10 @@ function App() {
         <p>
           Edit <code>src/App.tsx</code> and save to reload.
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
       </header>
+      <section className="section">
+        <SmallMultiples />
+      </section>
     </div>
   );
 }
