@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
+import axios from 'axios';
 import './App.css';
 
-function SmallMultiples() {
-  const listItems = ["Tokyo", "Osaka", "Aichi", "Kanagawa", "Hokkaido"].map((pref) =>
+function SmallMultiples(props: any) {
+  const listItems = props.listItems.map((pref: any) =>
     <div className="column is-2">
-      <h2>{pref}</h2>
+      <h2>{pref.name}</h2>
     </div>
   );
   return (
@@ -16,6 +17,16 @@ function SmallMultiples() {
 }
 
 function App() {
+  const [listItems, setListItems] = useState([]);
+
+  const fetch = async () => {
+    const result = await axios(
+      "https://raw.githubusercontent.com/code4sabae/covid19/master/data/covid19japan-all.json"
+    );
+    setListItems(result.data[0].area);
+  }
+  fetch();
+
   return (
     <div className="App">
       <header className="App-header">
@@ -25,7 +36,9 @@ function App() {
         </p>
       </header>
       <section className="section">
-        <SmallMultiples />
+        <SmallMultiples
+          listItems={listItems}
+        />
       </section>
     </div>
   );
