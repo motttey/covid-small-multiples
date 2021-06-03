@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import axios from 'axios';
 import './App.css';
 
 function SmallMultiples(props: any) {
   const listItems = props.listItems.map((pref: any) =>
-    <div className="column is-2">
+    <div className="column is-4" key={pref.name}>
       <h2>{pref.name}</h2>
     </div>
   );
   return (
     <div className="container">
-      <div className="columns">{listItems}</div>
+      <div className="columns is-multiline">
+        {listItems}
+      </div>
     </div>
   )
 }
@@ -29,11 +30,8 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
+      <header className="header">
+        COVID-19 Small Multiples
       </header>
       <section className="section">
         <SmallMultiples
