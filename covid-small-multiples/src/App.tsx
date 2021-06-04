@@ -2,10 +2,15 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './App.css';
 
+interface StringKeyObject {
+    // 今回はstring
+    [key: string]: any;
+}
+
 function SmallMultiples(props: any) {
-  const listItems = props.listItems.map((pref: any) =>
-    <div className="column is-4" key={pref.name}>
-      <h2>{pref.name}</h2>
+  const listItems = props.prefNameList.map((pref: any) =>
+    <div className="column is-4" key={pref}>
+      <h2>{pref}</h2>
     </div>
   );
   return (
@@ -18,13 +23,25 @@ function SmallMultiples(props: any) {
 }
 
 function App() {
+  const [prefNameList, setPrefNameList] = useState([]);
   const [listItems, setListItems] = useState([]);
 
   const fetch = async () => {
     const result = await axios(
       "https://raw.githubusercontent.com/code4sabae/covid19/master/data/covid19japan-all.json"
     );
-    setListItems(result.data[0].area);
+    const prefNameListObj = result.data[0].area.map((d: any) => d.name);
+
+    const listItemsObj = result.data.slice(-50).map((d: any) => {
+      let resultEachTime: StringKeyObject = {};
+      prefNameListObj.forEach((p: string, i: number) => {
+        resultEachTime[p] = d.area[i]["ncurrentpatients"]
+      });
+      return resultEachTime;
+    });
+
+    setPrefNameList(prefNameListObj);
+    setListItems(listItemsObj);
   }
   fetch();
 
@@ -35,7 +52,7 @@ function App() {
       </header>
       <section className="section">
         <SmallMultiples
-          listItems={listItems}
+          prefNameList={prefNameList}
         />
       </section>
     </div>
