@@ -2,46 +2,39 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 
-interface StringKeyObject {
-    // 今回はstring
-    [key: string]: any;
-}
-
 function SmallMultiples(props: any) {
-  const listItems = props.prefNameList.map((pref: any) =>
-    <div className="column is-4" key={pref}>
-      <h2>{pref}</h2>
+  const prefList = props.listItems.map((pref: any, index: number) =>
+    <div className="column is-4" key={pref[0].name}>
+      <h2>{pref[0].name}</h2>
+      <h3>{pref[0].npatients}</h3>
     </div>
   );
   return (
     <div className="container">
       <div className="columns is-multiline">
-        {listItems}
+        {prefList}
       </div>
     </div>
   )
 }
 
 function App() {
-  const [prefNameList, setPrefNameList] = useState([]);
   const [listItems, setListItems] = useState([]);
 
   const fetch = async () => {
     const result = await axios(
       "https://raw.githubusercontent.com/code4sabae/covid19/master/data/covid19japan-all.json"
     );
-    const prefNameListObj = result.data[0].area.map((d: any) => d.name);
-
-    const listItemsObj = result.data.slice(-50).map((d: any) => {
-      let resultEachTime: StringKeyObject = {};
-      prefNameListObj.forEach((p: string, i: number) => {
-        resultEachTime[p] = d.area[i]["ncurrentpatients"]
+    const dataSlice = result.data.slice(-50);
+    const listTimeSeriesObj = result.data[0].area
+      .map((d: any) => d.name)
+      .map((p: string, i: number) => {
+        return dataSlice.map((d: any) => {
+          return d.area[i];
+        });
       });
-      return resultEachTime;
-    });
 
-    setPrefNameList(prefNameListObj);
-    setListItems(listItemsObj);
+    setListItems(listTimeSeriesObj);
   }
 
   useEffect(() => {
@@ -55,7 +48,7 @@ function App() {
       </header>
       <section className="section">
         <SmallMultiples
-          prefNameList={prefNameList}
+          listItems={listItems}
         />
       </section>
     </div>
