@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import LineChart from './LineChart';
+
 import './App.css';
 
 function SmallMultiples(props: any) {
+
   const prefList = props.listItems.map((pref: any, index: number) =>
     <div className="column is-4" key={pref[0].name}>
       <h2>{pref[0].name}</h2>
-      <h3>{pref[0].npatients}</h3>
+      <LineChart data={pref} />
     </div>
   );
   return (
@@ -33,6 +36,8 @@ function App() {
           return d.area[i];
         });
       });
+
+    console.log(listTimeSeriesObj[0]);
 
     setListItems(listTimeSeriesObj);
   }
