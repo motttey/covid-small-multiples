@@ -23,16 +23,16 @@ function LineChart(props: any) {
     () => {
       const tData = (props.data || []) as Array<Data>;
 
-      const height = 100;
+      const height = 150;
       const width = 100;
-      const margin = { top: 20, right: 10, bottom: 20, left: 10 };
+      const margin = { top: 50, right: 10, bottom: 20, left: 10 };
 
       const x = d3
         .scaleLinear()
         .domain(tData.map((d: Data, i: number) => i))
         .rangeRound([margin.left, width - margin.right]);
 
-      let maxY = d3.max(tData, yValue) || new Date();
+      let maxY = d3.max(tData, yValue) || 0;
       const y1 = d3
         .scaleLinear()
         .domain([0, maxY])
@@ -57,8 +57,9 @@ function LineChart(props: any) {
     <svg
       ref={ref}
       style={{
-        height: 500,
+        height: 250,
         width: "100%",
+        marginTop: "50px",
         marginRight: "0px",
         marginLeft: "0px",
       }}

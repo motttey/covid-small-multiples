@@ -7,8 +7,8 @@ import './App.css';
 function SmallMultiples(props: any) {
 
   const prefList = props.listItems.map((pref: any, index: number) =>
-    <div className="column is-4" key={pref[0].name}>
-      <h2>{pref[0].name}</h2>
+    <div className="column is-4" key={pref[0].name_jp}>
+      <h2>{pref[0].name_jp}</h2>
       <LineChart data={pref} />
     </div>
   );
@@ -28,13 +28,19 @@ function App() {
     const result = await axios(
       "https://raw.githubusercontent.com/code4sabae/covid19/master/data/covid19japan-all.json"
     );
-    const dataSlice = result.data.slice(-50);
+    const dataSlice = result.data
     const listTimeSeriesObj = result.data[0].area
       .map((d: any) => d.name)
-      .map((p: string, i: number) => {
-        return dataSlice.map((d: any) => {
-          return d.area[i];
-        });
+      .map((p: string, idx: number) => {
+        return dataSlice.map((d: any, i: number, arr: Array<any>) => {
+          const prefCurArray = d.area[idx];
+          const prefPrevArray = (i > 0)? arr[i - 1].area[idx]: prefCurArray;
+
+          return {
+            name_jp: prefCurArray["name_jp"],
+            ncurrentpatients: prefCurArray["ncurrentpatients"] - prefPrevArray["ncurrentpatients"]
+          };
+        }).slice(-50);
       });
 
     console.log(listTimeSeriesObj[0]);
