@@ -38,7 +38,7 @@ function App() {
 
           return {
             name_jp: prefCurArray["name_jp"],
-            ncurrentpatients: prefCurArray["ncurrentpatients"] - prefPrevArray["ncurrentpatients"]
+            npatients: prefCurArray["npatients"] - prefPrevArray["npatients"]
           };
         }).slice(-50);
       });
