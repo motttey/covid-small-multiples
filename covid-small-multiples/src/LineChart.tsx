@@ -1,27 +1,17 @@
 import * as d3 from 'd3';
 import React, { useRef, useEffect } from 'react';
 
-interface Data {
-  "IS03155-2": String;
-  name_jp: String;
-  ncurrentpatients: number;
-  ndeaths: number;
-  nexits: number;
-  nheavycurrentpatients: number;
-  ninspections: number;
-  npatients: number;
-  unknowns: number;
-}
+import { CovidData } from './@types/data';
 
 function LineChart(props: any) {
   const ref = useRef(null);
 
-  const yValue = (d: Data): number => d.npatients;
+  const yValue = (d: CovidData): number => d.npatients;
   const xValue = (i: number): number => i;
 
   useEffect(
     () => {
-      const tData = (props.data || []) as Array<Data>;
+      const tData = (props.data || []) as Array<CovidData>;
 
       const height = 150;
       const width = 250;
@@ -29,10 +19,8 @@ function LineChart(props: any) {
 
       const x = d3
         .scaleLinear()
-        .domain([0, d3.max(tData.map((d: Data, i: number) => i)) || 1])
+        .domain([0, d3.max(tData.map((d: CovidData, i: number) => i)) || 1])
         .rangeRound([margin.left, width - margin.right]);
-
-      console.log(x);
 
       let maxY = d3.max(tData, yValue) || 0;
       const y1 = d3
@@ -40,9 +28,9 @@ function LineChart(props: any) {
         .domain([0, maxY])
         .rangeRound([height - margin.bottom, margin.top]);
 
-      const line = d3.line<Data>()
-        .x((d: Data, i: number) => { return x(xValue(i)) || 0; })
-        .y((d: Data) => { return y1(yValue(d)) || 0; });
+      const line = d3.line<CovidData>()
+        .x((d: CovidData, i: number) => { return x(xValue(i)) || 0; })
+        .y((d: CovidData) => { return y1(yValue(d)) || 0; });
 
       d3.select(ref.current)
         .attr("viewBox", "0 0 " + width  + " " + height)
