@@ -22,16 +22,12 @@ function SmallMultiples(props: any) {
   )
 }
 
-/*
-function SortByMax(data: Array<any>, key: String) {
+function SortByMaxPatients(data: Array<any>) {
   data.sort((a: Array<CovidData>, b: Array<CovidData>) => {
-    return (
-      d3.max(a.map((d: any) => d.npatients)) - d3.max(b.map((d: any) => d.npatients))
-    )? 1: -1;
+    return  d3.max(b.map((d: any) => d.npatients)) - d3.max(a.map((d: any) => d.npatients))
   });
   return data;
 }
-*/
 
 function App() {
   const [listItems, setListItems] = useState([]);
@@ -55,7 +51,7 @@ function App() {
         }).slice(-50);
       });
 
-    // listTimeSeriesObj = SortByMax(listTimeSeriesObj, 'npatients');
+    listTimeSeriesObj = SortByMaxPatients(listTimeSeriesObj);
     setListItems(listTimeSeriesObj);
   }
 
