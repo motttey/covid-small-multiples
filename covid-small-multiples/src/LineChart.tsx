@@ -7,6 +7,7 @@ function LineChart(props: any) {
   const ref = useRef(null);
 
   const yValue = (d: CovidData): number => d.npatients;
+  const yValueAvg = (d: CovidData): number => d.avgNpatients;
   const xValue = (i: number): number => i;
 
   useEffect(
@@ -32,6 +33,11 @@ function LineChart(props: any) {
         .x((d: CovidData, i: number) => { return x(xValue(i)) || 0; })
         .y((d: CovidData) => { return y1(yValue(d)) || 0; });
 
+      const lineAvg = d3.line<CovidData>()
+        .curve (d3.curveCatmullRom)
+        .x((d: CovidData, i: number) => { return x(xValue(i)) || 0; })
+        .y((d: CovidData) => { return y1(yValueAvg(d)) || 0; });
+
       d3.select(ref.current)
         .attr("viewBox", "0 0 " + width  + " " + height)
         .attr("width", "100%")
@@ -45,6 +51,16 @@ function LineChart(props: any) {
         .attr("stroke", "red")
         .attr("stroke-width", 1)
         .attr("d", line);
+
+      d3.select(ref.current)
+        .select(".plot-area")
+        .append("path")
+        .datum(tData)
+        .attr("fill", "none")
+        .attr("stroke", "green")
+        .attr("stroke-width", 1)
+        .attr("d", lineAvg);
+
     }, [props.data]
   );
 
