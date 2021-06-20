@@ -43,10 +43,15 @@ function App() {
         return dataSlice.map((d: any, i: number, arr: Array<any>) => {
           const prefCurArray = d.area[idx];
           const prefPrevArray = (i > 0)? arr[i - 1].area[idx]: prefCurArray;
+          const prefAvgArray = arr.slice(i - 7, i).map((d) => d.area[idx])
+            .map((d: CovidData, i: number, arr: Array<CovidData>) => {
+              return d.npatients - arr[(i || 1) - 1].npatients;
+            });
 
           return {
             name_jp: prefCurArray["name_jp"],
-            npatients: prefCurArray["npatients"] - prefPrevArray["npatients"]
+            npatients: prefCurArray["npatients"] - prefPrevArray["npatients"],
+            avgNpatients: d3.mean(prefAvgArray)
           };
         }).slice(-50);
       });

@@ -6,5 +6,6 @@ export interface CovidData {
   nheavycurrentpatients: number;
   ninspections: number;
   npatients: number;
+  avgNpatients: number;
   [key: String]: any;
 }
