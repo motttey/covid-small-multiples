@@ -22,15 +22,36 @@ function SmallMultiples(props: any) {
   )
 }
 
-function SortByMaxPatients(data: Array<any>) {
-  data.sort((a: Array<CovidData>, b: Array<CovidData>) => {
+function SortButtons(props: any) {
+  const sortByMax = (a: Array<CovidData>, b: Array<CovidData>) => {
     return  d3.max(b.map((d: any) => d.npatients)) - d3.max(a.map((d: any) => d.npatients))
-  });
-  return data;
+  }
+
+  function handleClick() {
+    console.log('You clicked submit.');
+    props.execFunc(sortByMax);
+  }
+
+  return (
+    <div className="container">
+      <div className="columns is-multiline">
+        <div className="column">
+          <div className="button" onClick={handleClick}>
+            SortByMaxPatients
+            </div>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 function App() {
   const [listItems, setListItems] = useState([]);
+
+  const executeSort = (func: (a: Array<CovidData>, b: Array<CovidData>) => number) => {
+    setListItems((list) => [...list.sort(func)]);
+    console.log(listItems);
+  }
 
   const fetch = async () => {
     const result = await axios(
@@ -56,7 +77,6 @@ function App() {
         }).slice(-50);
       });
 
-    listTimeSeriesObj = SortByMaxPatients(listTimeSeriesObj);
     setListItems(listTimeSeriesObj);
   }
 
@@ -69,6 +89,9 @@ function App() {
       <header className="header">
         COVID-19 Small Multiples
       </header>
+      <section className="section">
+        <SortButtons execFunc={executeSort} />
+      </section>
       <section className="section">
         <SmallMultiples
           listItems={listItems}
