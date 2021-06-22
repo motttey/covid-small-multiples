@@ -7,7 +7,7 @@ import { CovidData } from './@types/data';
 import './App.css';
 
 function SmallMultiples(props: any) {
-  const prefList = props.listItems.map((pref: any, index: number) =>
+  const prefList = props.listItems.map((pref: any) =>
     <div className="column is-4" key={pref[0].name_jp}>
       <h2>{pref[0].name_jp}</h2>
       <LineChart data={pref} />
@@ -58,7 +58,7 @@ function App() {
       "https://raw.githubusercontent.com/code4sabae/covid19/master/data/covid19japan-all.json"
     );
     const dataSlice = result.data;
-    let listTimeSeriesObj = result.data[0].area
+    const listTimeSeriesObj = result.data[0].area
       .map((d: any) => d.name)
       .map((p: string, idx: number) => {
         return dataSlice.map((d: any, i: number, arr: Array<any>) => {

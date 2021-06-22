@@ -3,7 +3,7 @@ import React, { useRef, useEffect } from 'react';
 
 import { CovidData } from './@types/data';
 
-function LineChart(props: any) {
+function LineChart(props: any): any {
   const ref = useRef(null);
 
   const yValue = (d: CovidData): number => d.npatients;
@@ -23,7 +23,7 @@ function LineChart(props: any) {
         .domain([0, d3.max(tData.map((d: CovidData, i: number) => i)) || 1])
         .rangeRound([margin.left, width - margin.right]);
 
-      let maxY = d3.max(tData, yValue) || 0;
+      const maxY = d3.max(tData, yValue) || 0;
       const y1 = d3
         .scaleLinear()
         .domain([0, maxY])

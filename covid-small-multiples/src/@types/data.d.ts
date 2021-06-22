@@ -1,5 +1,5 @@
 export interface CovidData {
-  name_jp: String;
+  name_jp: string;
   ncurrentpatients: number;
   ndeaths: number;
   nexits: number;
@@ -7,5 +7,5 @@ export interface CovidData {
   ninspections: number;
   npatients: number;
   avgNpatients: number;
-  [key: String]: any;
+  [key: string]: any;
 }
