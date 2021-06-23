@@ -24,21 +24,29 @@ function SmallMultiples(props: any) {
 
 function SortButtons(props: any) {
   const sortByMax = (a: Array<CovidData>, b: Array<CovidData>) => {
-    return  d3.max(b.map((d: any) => d.npatients)) - d3.max(a.map((d: any) => d.npatients))
+    return d3.max(b.map((d: any) => d.npatients)) - d3.max(a.map((d: any) => d.npatients))
   }
 
-  function handleClick() {
-    console.log('You clicked submit.');
-    props.execFunc(sortByMax);
+  const sortByRatio = (a: Array<CovidData>, b: Array<CovidData>) => {
+    const sliceMax = (data: Array<CovidData>, days: number) =>
+      d3.max(data.slice(days).map((d: any) => d.npatients));
+    const ratioFunc = (data: Array<CovidData>) =>
+      (sliceMax(data, -14) !== 0) ? sliceMax(data, 14)/sliceMax(data, -14) : 0;
+    return ratioFunc(b) - ratioFunc(a);
   }
 
   return (
     <div className="container">
       <div className="columns is-multiline">
         <div className="column">
-          <div className="button" onClick={handleClick}>
+          <div className="button" onClick={() => props.execFunc(sortByMax)}>
             SortByMaxPatients
-            </div>
+          </div>
+        </div>
+        <div className="column">
+          <div className="button" onClick={() => props.execFunc(sortByRatio)}>
+            SortByRatioPatients
+          </div>
         </div>
       </div>
     </div>
