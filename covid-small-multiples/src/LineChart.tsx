@@ -6,7 +6,7 @@ import { CovidData } from './@types/data';
 function LineChart(props: any): any {
   const ref = useRef(null);
 
-  const yValue = (d: CovidData): number => d.npatients;
+  const yValue = (d: CovidData): number => d[props.keyAttribute];
   const yValueAvg = (d: CovidData): number => d.avgNpatients;
   const xValue = (i: number): number => i;
 

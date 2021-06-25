@@ -10,7 +10,10 @@ function SmallMultiples(props: any) {
   const prefList = props.listItems.map((pref: any) =>
     <div className="column is-4" key={pref[0].name_jp}>
       <h2>{pref[0].name_jp}</h2>
-      <LineChart data={pref} />
+      <LineChart
+        data={pref}
+        keyAttribute={props.keyAttribute}
+      />
     </div>
   );
   return (
@@ -72,7 +75,7 @@ function SortButtons(props: any) {
 
 function App() {
   const [listItems, setListItems] = useState([]);
-  const [keyAttribute, setKeyAttribute] = useState("npatients");
+  const [keyAttribute, setKeyAttribute] = useState("ndeaths");
 
   const executeSort = (func: (a: Array<CovidData>, b: Array<CovidData>) => number) => {
     setListItems((list) => [...list.sort(func)]);
@@ -104,7 +107,6 @@ function App() {
         }).slice(-50);
       });
 
-    setKeyAttribute("ndeaths");
     setListItems(listTimeSeriesObj);
   }
 
@@ -125,6 +127,7 @@ function App() {
       </section>
       <section className="section">
         <SmallMultiples
+          keyAttribute={keyAttribute}
           listItems={listItems}
         />
       </section>
