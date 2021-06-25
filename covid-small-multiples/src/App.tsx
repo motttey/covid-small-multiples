@@ -24,13 +24,13 @@ function SmallMultiples(props: any) {
 
 function SortButtons(props: any) {
   const sliceMin = (data: Array<CovidData>, days: number): number =>
-    d3.min(data.slice(days).map((d: any) => d.npatients));
+    d3.min(data.slice(days).map((d: any) => d[props.keyAttribute]));
 
   const sliceMax = (data: Array<CovidData>, days: number): number =>
-    d3.max(data.slice(days).map((d: any) => d.npatients));
+    d3.max(data.slice(days).map((d: any) => d[props.keyAttribute]));
 
   const sortByMax = (a: Array<CovidData>, b: Array<CovidData>) => {
-    return d3.max(b.map((d: any) => d.npatients)) - d3.max(a.map((d: any) => d.npatients))
+    return d3.max(b.map((d: any) => d[props.keyAttribute])) - d3.max(a.map((d: any) => d[props.keyAttribute]))
   }
 
   const sortByRatio = (a: Array<CovidData>, b: Array<CovidData>) => {
@@ -72,6 +72,7 @@ function SortButtons(props: any) {
 
 function App() {
   const [listItems, setListItems] = useState([]);
+  const [keyAttribute, setKeyAttribute] = useState("npatients");
 
   const executeSort = (func: (a: Array<CovidData>, b: Array<CovidData>) => number) => {
     setListItems((list) => [...list.sort(func)]);
@@ -91,17 +92,19 @@ function App() {
           const prefPrevArray = (i > 0)? arr[i - 1].area[idx]: prefCurArray;
           const prefAvgArray = arr.slice(i - 7, i).map((d) => d.area[idx])
             .map((d: CovidData, i: number, arr: Array<CovidData>) => {
-              return d.npatients - arr[(i || 1) - 1].npatients;
+              return d[keyAttribute] - arr[(i || 1) - 1][keyAttribute];
             });
 
           return {
             name_jp: prefCurArray["name_jp"],
+            ndeaths:  prefCurArray["ndeaths"] - prefPrevArray["ndeaths"],
             npatients: prefCurArray["npatients"] - prefPrevArray["npatients"],
             avgNpatients: d3.mean(prefAvgArray)
           };
         }).slice(-50);
       });
 
+    setKeyAttribute("ndeaths");
     setListItems(listTimeSeriesObj);
   }
 
@@ -115,7 +118,10 @@ function App() {
         COVID-19 Small Multiples
       </header>
       <section className="section">
-        <SortButtons execFunc={executeSort} />
+        <SortButtons
+          keyAttribute={keyAttribute}
+          execFunc={executeSort}
+        />
       </section>
       <section className="section">
         <SmallMultiples
