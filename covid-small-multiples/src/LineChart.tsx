@@ -7,7 +7,7 @@ function LineChart(props: any): any {
   const ref = useRef(null);
 
   const yValue = (d: CovidData): number => d[props.keyAttribute];
-  const yValueAvg = (d: CovidData): number => d.avgNpatients;
+  const yValueAvg = (d: CovidData): number => d[props.avgKeyAttribute];
   const xValue = (i: number): number => i;
 
   useEffect(

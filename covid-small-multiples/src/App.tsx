@@ -13,6 +13,7 @@ function SmallMultiples(props: any) {
       <LineChart
         data={pref}
         keyAttribute={props.keyAttribute}
+        avgKeyAttribute={props.keyAttribute + "Avg"}
       />
     </div>
   );
@@ -75,11 +76,17 @@ function SortButtons(props: any) {
 
 function App() {
   const [listItems, setListItems] = useState([]);
-  const [keyAttribute, setKeyAttribute] = useState("ndeaths");
+  const [keyAttribute, setKeyAttribute] = useState("npatients");
 
   const executeSort = (func: (a: Array<CovidData>, b: Array<CovidData>) => number) => {
     setListItems((list) => [...list.sort(func)]);
     console.log(listItems);
+  }
+
+  const sortKeyValue = (arr: Array<CovidData>, key: string) => {
+    return arr.map((d: CovidData, i: number, arr: Array<CovidData>) => {
+      return d[key] - arr[(i || 1) - 1][key];
+    });
   }
 
   const fetch = async () => {
@@ -93,20 +100,19 @@ function App() {
         return dataSlice.map((d: any, i: number, arr: Array<any>) => {
           const prefCurArray = d.area[idx];
           const prefPrevArray = (i > 0)? arr[i - 1].area[idx]: prefCurArray;
-          const prefAvgArray = arr.slice(i - 7, i).map((d) => d.area[idx])
-            .map((d: CovidData, i: number, arr: Array<CovidData>) => {
-              return d[keyAttribute] - arr[(i || 1) - 1][keyAttribute];
-            });
+          const avgSliceArray = arr.slice(i - 7, i).map((d) => d.area[idx])
 
           return {
             name_jp: prefCurArray["name_jp"],
             ndeaths:  prefCurArray["ndeaths"] - prefPrevArray["ndeaths"],
             npatients: prefCurArray["npatients"] - prefPrevArray["npatients"],
-            avgNpatients: d3.mean(prefAvgArray)
+            ndeathsAvg: d3.mean(sortKeyValue(avgSliceArray, "ndeaths")),
+            npatientsAvg: d3.mean(sortKeyValue(avgSliceArray, "npatients"))
           };
         }).slice(-50);
       });
 
+    setKeyAttribute("ndeaths");
     setListItems(listTimeSeriesObj);
   }
 
