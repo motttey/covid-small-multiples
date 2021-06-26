@@ -80,7 +80,6 @@ function App() {
 
   const executeSort = (func: (a: Array<CovidData>, b: Array<CovidData>) => number) => {
     setListItems((list) => [...list.sort(func)]);
-    console.log(listItems);
   }
 
   const sortKeyValue = (arr: Array<CovidData>, key: string) => {
@@ -112,7 +111,6 @@ function App() {
         }).slice(-50);
       });
 
-    setKeyAttribute("ndeaths");
     setListItems(listTimeSeriesObj);
   }
 
@@ -128,6 +126,7 @@ function App() {
       <section className="section">
         <SortButtons
           keyAttribute={keyAttribute}
+          setAttributes={setKeyAttribute}
           execFunc={executeSort}
         />
       </section>
