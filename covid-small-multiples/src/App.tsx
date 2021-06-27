@@ -124,6 +124,14 @@ function App() {
         COVID-19 Small Multiples
       </header>
       <section className="section">
+        <div className="column">
+          <div className="select">
+            <select onChange={(event) => setKeyAttribute(event.target.value)}>
+              <option value="npatients">npatients</option>
+              <option value="ndeaths">ndeaths</option>
+            </select>
+          </div>
+        </div>
         <SortButtons
           keyAttribute={keyAttribute}
           setAttributes={setKeyAttribute}

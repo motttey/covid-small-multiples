@@ -10,13 +10,19 @@ function LineChart(props: any): any {
   const yValueAvg = (d: CovidData): number => d[props.avgKeyAttribute];
   const xValue = (i: number): number => i;
 
+  const height = 150;
+  const width = 250;
+  const margin = { top: 10, right: 10, bottom: 30, left: 10 };
+
+  const refCurrent = d3.select(ref.current)
+  refCurrent
+    .attr("viewBox", "0 0 " + width  + " " + height)
+    .attr("width", "100%")
+    .attr("height", "100%");
+
   useEffect(
     () => {
       const tData = (props.data || []) as Array<CovidData>;
-
-      const height = 150;
-      const width = 250;
-      const margin = { top: 10, right: 10, bottom: 30, left: 10 };
 
       const x = d3
         .scaleLinear()
@@ -38,14 +44,13 @@ function LineChart(props: any): any {
         .x((d: CovidData, i: number) => { return x(xValue(i)) || 0; })
         .y((d: CovidData) => { return y1(yValueAvg(d)) || 0; });
 
-      d3.select(ref.current)
-        .attr("viewBox", "0 0 " + width  + " " + height)
-        .attr("width", "100%")
-        .attr("height", "100%");
-
+      // TODO: updateするように変更
+      d3.select(ref.current).select(".plot-area").selectAll("path").remove();
+      
       d3.select(ref.current)
         .select(".plot-area")
         .append("path")
+        .attr("class", "attributePath")
         .datum(tData)
         .attr("fill", "none")
         .attr("stroke", "red")
@@ -56,12 +61,13 @@ function LineChart(props: any): any {
         .select(".plot-area")
         .append("path")
         .datum(tData)
+        .attr("class", "movingAvgPath")
         .attr("fill", "none")
         .attr("stroke", "green")
         .attr("stroke-width", 1)
         .attr("d", lineAvg);
 
-    }, [props.data]
+    }, [props.data, props.keyAttribute, props.avgKeyAttribute]
   );
 
   return (
