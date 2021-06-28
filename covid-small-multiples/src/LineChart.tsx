@@ -14,12 +14,6 @@ function LineChart(props: any): any {
   const width = 250;
   const margin = { top: 10, right: 10, bottom: 30, left: 10 };
 
-  const refCurrent = d3.select(ref.current)
-  refCurrent
-    .attr("viewBox", "0 0 " + width  + " " + height)
-    .attr("width", "100%")
-    .attr("height", "100%");
-
   useEffect(
     () => {
       const tData = (props.data || []) as Array<CovidData>;
@@ -44,23 +38,41 @@ function LineChart(props: any): any {
         .x((d: CovidData, i: number) => { return x(xValue(i)) || 0; })
         .y((d: CovidData) => { return y1(yValueAvg(d)) || 0; });
 
-      // TODO: updateするように変更
-      d3.select(ref.current).select(".plot-area").selectAll("path").remove();
-      
+      const currentPath = d3.select(ref.current)
+        .select(".plot-area");
+
       d3.select(ref.current)
-        .select(".plot-area")
-        .append("path")
-        .attr("class", "attributePath")
+        .attr("viewBox", "0 0 " + width  + " " + height)
+        .attr("width", "100%")
+        .attr("height", "100%");
+
+      if (!currentPath.select("path.attributePath").node()) {
+        currentPath
+          .append("path")
+          .attr("class", "attributePath")
+      }
+
+      if (!currentPath.select("path.movingAvgPath").node()) {
+        currentPath
+          .append("path")
+          .attr("class", "movingAvgPath")
+      }
+
+      currentPath
+        .select("path.attributePath")
         .datum(tData)
+        .transition()
+        .duration(1000)
         .attr("fill", "none")
         .attr("stroke", "red")
         .attr("stroke-width", 1)
         .attr("d", line);
 
-      d3.select(ref.current)
-        .select(".plot-area")
-        .append("path")
+      currentPath
+        .select("path.movingAvgPath")
         .datum(tData)
+        .transition()
+        .duration(1000)
         .attr("class", "movingAvgPath")
         .attr("fill", "none")
         .attr("stroke", "green")
