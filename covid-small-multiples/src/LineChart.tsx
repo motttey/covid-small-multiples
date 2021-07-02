@@ -34,6 +34,8 @@ function LineChart(props: any): any {
         .rangeRound([margin.left, width - margin.right]);
 
       const maxY = d3.max(tData, yValue) || 0;
+      const minY = d3.min(tData, yValue) || 0;
+
       const y1 = d3
         .scaleLinear()
         .domain([0, maxY])
@@ -74,6 +76,16 @@ function LineChart(props: any): any {
         .attr("stroke", "green")
         .attr("stroke-width", 1)
         .attr("d", lineAvg);
+
+      getMergedPath(currentPath, "text", "maxValueText")
+        .attr("x", x(1))
+        .attr("y", y1(maxY))
+        .text(maxY);
+
+      getMergedPath(currentPath, "text", "minValueText")
+        .attr("x", x(1))
+        .attr("y", y1(minY))
+        .text(minY);
 
     }, [props.data, props.keyAttribute, props.avgKeyAttribute]
   );
