@@ -14,6 +14,16 @@ function LineChart(props: any): any {
   const width = 250;
   const margin = { top: 10, right: 10, bottom: 30, left: 10 };
 
+  const getMergedPath = (parentSvg: any, svgName: string, className: string) => {
+    const svgClassName = svgName + "." + className;
+    if (!parentSvg.select(svgClassName).node()) {
+      parentSvg
+        .append(svgName)
+        .attr("class", className)
+    }
+    return parentSvg.select(svgClassName)
+  }
+
   useEffect(
     () => {
       const tData = (props.data || []) as Array<CovidData>;
@@ -46,20 +56,7 @@ function LineChart(props: any): any {
         .attr("width", "100%")
         .attr("height", "100%");
 
-      if (!currentPath.select("path.attributePath").node()) {
-        currentPath
-          .append("path")
-          .attr("class", "attributePath")
-      }
-
-      if (!currentPath.select("path.movingAvgPath").node()) {
-        currentPath
-          .append("path")
-          .attr("class", "movingAvgPath")
-      }
-
-      currentPath
-        .select("path.attributePath")
+      getMergedPath(currentPath, "path", "attributePath")
         .datum(tData)
         .transition()
         .duration(1000)
@@ -68,8 +65,7 @@ function LineChart(props: any): any {
         .attr("stroke-width", 1)
         .attr("d", line);
 
-      currentPath
-        .select("path.movingAvgPath")
+      getMergedPath(currentPath, "path", "movingAvgPath")
         .datum(tData)
         .transition()
         .duration(1000)
