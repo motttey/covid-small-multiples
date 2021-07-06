@@ -105,8 +105,10 @@ function App() {
             name_jp: prefCurArray["name_jp"],
             ndeaths:  prefCurArray["ndeaths"] - prefPrevArray["ndeaths"],
             npatients: prefCurArray["npatients"] - prefPrevArray["npatients"],
+            ninspections: prefCurArray["ninspections"] - prefPrevArray["ninspections"],
             ndeathsAvg: d3.mean(sortKeyValue(avgSliceArray, "ndeaths")),
-            npatientsAvg: d3.mean(sortKeyValue(avgSliceArray, "npatients"))
+            npatientsAvg: d3.mean(sortKeyValue(avgSliceArray, "npatients")),
+            ninspectionsAvg: d3.mean(sortKeyValue(avgSliceArray, "ninspections"))
           };
         }).slice(-50);
       });
@@ -127,8 +129,11 @@ function App() {
         <div className="column">
           <div className="select">
             <select onChange={(event) => setKeyAttribute(event.target.value)}>
-              <option value="npatients">npatients</option>
-              <option value="ndeaths">ndeaths</option>
+              {
+                ["npatients", "ndeaths", "ninspections"].map((key) => {
+                  return <option key={key} value={key}>{key}</option>
+                })
+              }
             </select>
           </div>
         </div>
