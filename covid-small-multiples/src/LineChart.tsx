@@ -30,7 +30,7 @@ function LineChart(props: any): any {
 
       const x = d3
         .scaleLinear()
-        .domain([0, d3.max(tData.map((d: CovidData, i: number) => i)) || 1])
+        .domain([0, tData.length - 1 || 1])
         .rangeRound([margin.left, width - margin.right]);
 
       const maxY = d3.max(tData, yValue) || 0;
@@ -79,13 +79,31 @@ function LineChart(props: any): any {
 
       getMergedPath(currentPath, "text", "maxValueText")
         .attr("x", x(1))
-        .attr("y", y1(maxY))
-        .text(maxY);
+        .attr("y", y1(maxY) - 3)
+        .text(maxY)
+        .style("font-size", "16px");
+
+      getMergedPath(currentPath, "line", "maxLinePath")
+        .attr("x1", x(1))
+        .attr("y1", y1(maxY))
+        .attr("x2", x(tData.length - 1))
+        .attr("y2", y1(maxY))
+        .attr("stroke", "gray")
+        .attr("stroke-width", 1.5);
 
       getMergedPath(currentPath, "text", "minValueText")
         .attr("x", x(1))
-        .attr("y", y1(minY))
-        .text(minY);
+        .attr("y", y1(minY) - 3)
+        .text(minY)
+        .style("font-size", "16px");
+
+      getMergedPath(currentPath, "line", "minLinePath")
+        .attr("x1", x(1))
+        .attr("y1", y1(minY))
+        .attr("x2", x(tData.length - 1))
+        .attr("y2", y1(minY))
+        .attr("stroke", "gray")
+        .attr("stroke-width", 1.5);
 
     }, [props.data, props.keyAttribute, props.avgKeyAttribute]
   );
