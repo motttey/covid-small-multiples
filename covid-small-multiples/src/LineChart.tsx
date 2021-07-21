@@ -10,9 +10,9 @@ function LineChart(props: any): any {
   const yValueAvg = (d: CovidData): number => d[props.avgKeyAttribute];
   const xValue = (i: number): number => i;
 
-  const height = 150;
+  const height = 200;
   const width = 250;
-  const margin = { top: 10, right: 10, bottom: 30, left: 10 };
+  const margin = { top: 10, right: 10, bottom: 50, left: 10 };
 
   const getMergedPath = (parentSvg: any, svgName: string, className: string) => {
     const svgClassName = svgName + "." + className;
@@ -31,7 +31,7 @@ function LineChart(props: any): any {
       const x = d3
         .scaleLinear()
         .domain([0, tData.length - 1 || 1])
-        .rangeRound([margin.left, width - margin.right]);
+        .range([margin.left, width - margin.right]);
 
       const maxY = d3.max(tData, yValue) || 0;
       const minY = d3.min(tData, yValue) || 0;
@@ -39,7 +39,7 @@ function LineChart(props: any): any {
       const y1 = d3
         .scaleLinear()
         .domain([0, maxY])
-        .rangeRound([height - margin.bottom, margin.top]);
+        .range([height - margin.bottom, margin.top]);
 
       const line = d3.line<CovidData>()
         .x((d: CovidData, i: number) => { return x(xValue(i)) || 0; })
@@ -112,9 +112,10 @@ function LineChart(props: any): any {
     <svg
       ref={ref}
       style={{
-        height: 250,
+        height: "100%",
         width: "100%",
-        marginTop: "50px",
+        marginBottom: "100px",
+        marginTop: "-30px",
         marginRight: "0px",
         marginLeft: "0px",
       }}

@@ -9,7 +9,7 @@ import './App.css';
 function SmallMultiples(props: any) {
   const prefList = props.listItems.map((pref: any) =>
     <div className="column is-4" key={pref[0].name_jp}>
-      <h2>{pref[0].name_jp}</h2>
+      <h3 className="title is-3">{pref[0].name_jp}</h3>
       <LineChart
         data={pref}
         keyAttribute={props.keyAttribute}
@@ -123,7 +123,9 @@ function App() {
   return (
     <div className="App">
       <header className="header">
-        COVID-19 Small Multiples
+        <h1 className="title is-1">
+          COVID-19 Small Multiples
+        </h1>
       </header>
       <section className="section">
         <div className="column">
