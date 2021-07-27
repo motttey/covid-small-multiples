@@ -67,6 +67,14 @@ function LineChart(props: any): any {
         .attr("stroke-width", 1)
         .attr("d", line);
 
+      getMergedPath(currentPath, "line", "baseline")
+        .attr("x1", x(1))
+        .attr("y1", y1(0))
+        .attr("x2", x(tData.length - 1))
+        .attr("y2", y1(0))
+        .attr("stroke", "gray")
+        .attr("stroke-width", 1);
+
       getMergedPath(currentPath, "path", "movingAvgPath")
         .datum(tData)
         .transition()
@@ -89,6 +97,7 @@ function LineChart(props: any): any {
         .attr("x2", x(tData.length - 1))
         .attr("y2", y1(maxY))
         .attr("stroke", "gray")
+        .attr("opacity", 0.5)
         .attr("stroke-width", 1.5);
 
       getMergedPath(currentPath, "text", "minValueText")
@@ -103,6 +112,7 @@ function LineChart(props: any): any {
         .attr("x2", x(tData.length - 1))
         .attr("y2", y1(minY))
         .attr("stroke", "gray")
+        .attr("opacity", 0.5)
         .attr("stroke-width", 1.5);
 
     }, [props.data, props.keyAttribute, props.avgKeyAttribute]
