@@ -126,6 +126,10 @@ function App() {
         <h1 className="title is-1">
           COVID-19 Small Multiples
         </h1>
+        <p>
+          指標とソート基準を選択してください。<br/>
+          <a href="https://github.com/code4sabae/covid19">データ取得元</a>
+        </p>
       </header>
       <section className="section">
         <div className="column">
