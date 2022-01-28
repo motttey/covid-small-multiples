@@ -82,12 +82,20 @@ function App() {
     setListItems((list) => [...list.sort(func)]);
   }
 
-  const sortKeyValue = (arr: Array<CovidData>, key: string) => {
-    return arr.map((d: CovidData, i: number, arr: Array<CovidData>) => {
-      return d[key] - arr[(i || 1) - 1][key];
+  const mapKeyValue = (arr: Array<CovidData>, key: string) => {
+    return arr.map((d: CovidData) => {
+      return d[key];
     });
   }
 
+  const sortValue = (arr: Array<number>) => {
+    return arr.map((d: number, i: number, arr: Array<number>) => {
+      return d - arr[(i || 1) - 1];
+    });
+  }
+
+  const generation_days = 7;
+  const report_interval = 5;
   const fetch = async () => {
     const result = await axios(
       "https://raw.githubusercontent.com/code4sabae/covid19/master/data/covid19japan-all.json"
@@ -99,16 +107,27 @@ function App() {
         return dataSlice.map((d: any, i: number, arr: Array<any>) => {
           const prefCurArray = d.area[idx];
           const prefPrevArray = (i > 0)? arr[i - 1].area[idx]: prefCurArray;
-          const avgSliceArray = arr.slice(i - 7, i).map((d) => d.area[idx])
+
+          const avgSliceArray = arr.slice(i - generation_days, i).map((d) => d.area[idx])
+          const avgPrevSliceArray = arr.slice(i - 2 * generation_days, i - generation_days).map((d) => d.area[idx])
 
           return {
             name_jp: prefCurArray["name_jp"],
             ndeaths:  prefCurArray["ndeaths"] - prefPrevArray["ndeaths"],
             npatients: prefCurArray["npatients"] - prefPrevArray["npatients"],
             ninspections: prefCurArray["ninspections"] - prefPrevArray["ninspections"],
-            ndeathsAvg: d3.mean(sortKeyValue(avgSliceArray, "ndeaths")),
-            npatientsAvg: d3.mean(sortKeyValue(avgSliceArray, "npatients")),
-            ninspectionsAvg: d3.mean(sortKeyValue(avgSliceArray, "ninspections"))
+            ndeathsAvg: d3.mean(
+              sortValue(mapKeyValue(avgSliceArray, "ndeaths"))
+            ),
+            npatientsAvg: d3.mean(
+              sortValue(mapKeyValue(avgSliceArray, "npatients"))
+            ),
+            ninspectionsAvg: d3.mean(
+              sortValue(mapKeyValue(avgSliceArray, "ninspections"))
+            ),
+            effectiveReproductionNum: Math.pow(
+                (d3.sum(mapKeyValue(avgSliceArray, "npatients")) / d3.sum(mapKeyValue(avgPrevSliceArray, "npatients"))), (generation_days/report_interval)
+            )
           };
         }).slice(-50);
       });
@@ -136,7 +155,7 @@ function App() {
           <div className="select">
             <select onChange={(event) => setKeyAttribute(event.target.value)}>
               {
-                ["npatients", "ndeaths", "ninspections"].map((key) => {
+                ["npatients", "ndeaths", "ninspections", "effectiveReproductionNum"].map((key) => {
                   return <option key={key} value={key}>{key}</option>
                 })
               }
