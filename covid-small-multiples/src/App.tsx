@@ -109,7 +109,9 @@ function App() {
           const prefPrevArray = (i > 0)? arr[i - 1].area[idx]: prefCurArray;
 
           const avgSliceArray = arr.slice(i - generation_days, i).map((d) => d.area[idx])
-          const avgPrevSliceArray = arr.slice(i - 2 * generation_days, i - generation_days).map((d) => d.area[idx])
+
+          const sumPatientGenerationDays = d.area[idx]["npatients"] - arr[i - (generation_days - 1)]?.area[idx]["npatients"];
+          const sumPatientPastGenerationDays = arr[i - (generation_days)]?.area[idx]["npatients"] - arr[i - (generation_days * 2 - 1)]?.area[idx]["npatients"];
 
           return {
             name_jp: prefCurArray["name_jp"],
@@ -125,9 +127,9 @@ function App() {
             ninspectionsAvg: d3.mean(
               sortValue(mapKeyValue(avgSliceArray, "ninspections"))
             ),
-            effectiveReproductionNum: Math.pow(
-                (d3.sum(mapKeyValue(avgSliceArray, "npatients")) / d3.sum(mapKeyValue(avgPrevSliceArray, "npatients"))), (generation_days/report_interval)
-            )
+            effectiveReproductionNum: (sumPatientPastGenerationDays > 0) ? Math.pow(
+                (sumPatientGenerationDays / sumPatientPastGenerationDays), (report_interval/generation_days)
+            ) : 0
           };
         }).slice(-50);
       });
