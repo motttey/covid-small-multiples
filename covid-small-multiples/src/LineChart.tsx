@@ -36,6 +36,8 @@ function LineChart(props: any): any {
       const maxY = d3.max(tData, yValue) || 0;
       const minY = d3.min(tData, yValue) || 0;
 
+      const avgY = d3.mean(tData, yValue) || 0;
+
       const y1 = d3
         .scaleLinear()
         .domain([minY, maxY])
@@ -46,9 +48,13 @@ function LineChart(props: any): any {
         .y((d: CovidData) => { return y1(yValue(d)) || 0; });
 
       const lineAvg = d3.line<CovidData>()
-        .curve (d3.curveCatmullRom)
+        .curve(d3.curveCatmullRom)
         .x((d: CovidData, i: number) => { return x(xValue(i)) || 0; })
         .y((d: CovidData) => { return y1(yValueAvg(d)) || 0; });
+
+      const lineAvgWhole = d3.line<CovidData>()
+        .x((d: CovidData, i: number) => { return x(xValue(i)) || 0; })
+        .y(() => { return y1(avgY) || 0; });
 
       const currentPath = d3.select(ref.current)
         .select(".plot-area");
@@ -75,17 +81,18 @@ function LineChart(props: any): any {
         .attr("stroke", "gray")
         .attr("stroke-width", 1);
 
-      if (props.avgKeyAttribute in tData[0]) {
-        getMergedPath(currentPath, "path", "movingAvgPath")
-          .datum(tData)
-          .transition()
-          .duration(1000)
-          .attr("class", "movingAvgPath")
-          .attr("fill", "none")
-          .attr("stroke", "green")
-          .attr("stroke-width", 1)
-          .attr("d", lineAvg);
-      }
+      getMergedPath(currentPath, "path", "movingAvgPath")
+        .datum(tData)
+        .transition()
+        .duration(1000)
+        .attr("class", "movingAvgPath")
+        .attr("fill", "none")
+        .attr("stroke", "green")
+        .attr("stroke-width", 1)
+        .attr("d", (props.avgKeyAttribute in tData[0])
+          ? lineAvg : lineAvgWhole
+        );
+
 
       getMergedPath(currentPath, "text", "maxValueText")
         .attr("x", x(1))
