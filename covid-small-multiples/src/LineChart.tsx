@@ -64,13 +64,16 @@ function LineChart(props: any): any {
         .attr("width", "100%")
         .attr("height", "100%");
 
+      const tooltip = getMergedPath(currentPath, "text", "tooltip")
+        .attr('class', 'tooltip')
+        .style('opacity', 0)
+        .text('');
+
       getMergedPath(currentPath, "path", "attributePath")
         .datum(tData)
-        .transition()
-        .duration(1000)
         .attr("fill", "none")
         .attr("stroke", "red")
-        .attr("stroke-width", 1)
+        .attr("stroke-width", 1.5)
         .attr("d", line);
 
       getMergedPath(currentPath, "line", "baseline")
@@ -83,16 +86,27 @@ function LineChart(props: any): any {
 
       getMergedPath(currentPath, "path", "movingAvgPath")
         .datum(tData)
-        .transition()
-        .duration(1000)
         .attr("class", "movingAvgPath")
         .attr("fill", "none")
         .attr("stroke", "green")
         .attr("stroke-width", 1)
         .attr("d", (props.avgKeyAttribute in tData[0])
           ? lineAvg : lineAvgWhole
-        );
-
+        )
+        .on("mouseover", () => {
+          tooltip
+            .attr("y", x(xValue(0)))
+            .attr("y", y1(avgY))
+            .style("opacity", 1)
+            .text(props.keyAttribute + ': '
+              + avgY
+            );
+        })
+        .on("mouseout", () => {
+          tooltip
+            .style("mouseleave", 0)
+            .text('');
+        });
 
       getMergedPath(currentPath, "text", "maxValueText")
         .attr("x", x(1))
