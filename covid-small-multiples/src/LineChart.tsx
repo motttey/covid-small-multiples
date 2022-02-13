@@ -24,6 +24,27 @@ function LineChart(props: any): any {
     return parentSvg.select(svgClassName)
   }
 
+  const getMergedPathData = (
+    parentSvg: any,
+    svgName: string,
+    className: string,
+    data: Array<any>
+  ) => {
+      const svgClassName = svgName + "." + className;
+
+      if (!parentSvg.selectAll(svgClassName).node()) {
+        parentSvg
+          .selectAll(svgClassName)
+          .data(data)
+          .enter()
+          .append(svgName)
+          .attr("class", className);
+      }
+      return parentSvg
+        .selectAll(svgClassName)
+        .data(data);
+  }
+
   useEffect(
     () => {
       const tData = (props.data || []) as Array<CovidData>;
@@ -92,19 +113,26 @@ function LineChart(props: any): any {
         .attr("stroke-width", 1)
         .attr("d", (props.avgKeyAttribute in tData[0])
           ? lineAvg : lineAvgWhole
-        )
-        .on("mouseover", () => {
+        );
+
+      getMergedPathData(currentPath, "circle", "pathNode", tData)
+        .attr("cx", (_: any, i: number) => x(xValue(i)) || 0)
+        .attr("cy",  (d: CovidData) => y1(yValue(d)) || 0)
+        .attr("r", 2)
+        .attr("fill", "red")
+        .style("opacity", 0)
+        .on("mouseover", (_: any, d: CovidData) => {
           tooltip
-            .attr("y", x(xValue(0)))
-            .attr("y", y1(avgY))
+            .attr("x", x(0))
+            .attr("y", y1(yValue(d)))
             .style("opacity", 1)
             .text(props.keyAttribute + ': '
-              + avgY
+              + yValue(d)
             );
         })
         .on("mouseout", () => {
           tooltip
-            .style("mouseleave", 0)
+            .style("opacity", 0)
             .text('');
         });
 
