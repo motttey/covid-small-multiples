@@ -13,6 +13,7 @@ function LineChart(props: any): any {
   const height = 200;
   const width = 250;
   const margin = { top: 10, right: 10, bottom: 50, left: 10 };
+  const font_size = 12;
 
   const getMergedPath = (parentSvg: any, svgName: string, className: string) => {
     const svgClassName = svgName + "." + className;
@@ -88,6 +89,8 @@ function LineChart(props: any): any {
       const tooltip = getMergedPath(currentPath, "text", "tooltip")
         .attr('class', 'tooltip')
         .style('opacity', 0)
+        .style('z-index', 2)
+        .style("font-size", `${font_size}px`)
         .text('');
 
       getMergedPath(currentPath, "path", "attributePath")
@@ -140,7 +143,7 @@ function LineChart(props: any): any {
         .attr("x", x(1))
         .attr("y", y1(maxY) - 3)
         .text(maxY.toPrecision(5))
-        .style("font-size", "16px");
+        .style("font-size", `${font_size}px`);
 
       getMergedPath(currentPath, "line", "maxLinePath")
         .attr("x1", x(1))
@@ -155,7 +158,7 @@ function LineChart(props: any): any {
         .attr("x", x(1))
         .attr("y", y1(minY) - 3)
         .text(minY.toPrecision(5))
-        .style("font-size", "16px");
+        .style("font-size", `${font_size}px`);
 
       getMergedPath(currentPath, "line", "minLinePath")
         .attr("x1", x(1))
