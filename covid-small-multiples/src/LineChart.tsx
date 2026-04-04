@@ -6,7 +6,9 @@ import { CovidData } from './@types/data';
 function LineChart(props: any): any {
   const ref = useRef(null);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const yValue = (d: CovidData): number => d[props.keyAttribute];
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const yValueAvg = (d: CovidData): number => d[props.avgKeyAttribute];
   const xValue = (i: number): number => i;
 
@@ -169,7 +171,7 @@ function LineChart(props: any): any {
         .attr("opacity", 0.5)
         .attr("stroke-width", 1.5);
 
-    }, [props.data, props.keyAttribute, props.avgKeyAttribute]
+    }, [props.data, props.keyAttribute, props.avgKeyAttribute, margin.left, margin.right, margin.bottom, margin.top, yValue, yValueAvg]
   );
 
   return (

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import LineChart from './LineChart';
 import * as d3 from 'd3';
 import { CovidData } from './@types/data';
@@ -96,14 +95,17 @@ function App() {
 
   const generation_days = 7;
   const report_interval = 5;
-  const fetch = async () => {
-    const result = await axios(
-      "https://raw.githubusercontent.com/code4sabae/covid19/master/data/covid19japan-all.json"
-    );
-    const dataSlice = result.data;
-    const listTimeSeriesObj = result.data[0].area
+  const fetchCovidData = async () => {
+    const url = "https://raw.githubusercontent.com/code4sabae/covid19/master/data/covid19japan-all.json";
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch covid data: ${response.status} ${response.statusText}`);
+    }
+
+    const dataSlice = await response.json();
+    const listTimeSeriesObj = dataSlice[0].area
       .map((d: any) => d.name)
-      .map((p: string, idx: number) => {
+      .map((_p: string, idx: number) => {
         return dataSlice.map((d: any, i: number, arr: Array<any>) => {
           const prefCurArray = d.area[idx];
           const prefPrevArray = (i > 0)? arr[i - 1].area[idx]: prefCurArray;
@@ -138,7 +140,10 @@ function App() {
   }
 
   useEffect(() => {
-    fetch();
+    fetchCovidData().catch((e) => {
+      // eslint-disable-next-line no-console
+      console.error(e);
+    });
   }, []);
 
   return (
